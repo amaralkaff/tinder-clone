@@ -8,14 +8,20 @@ React Native mobile application with Tinder-style swiping interface.
 - 🎨 Atomic Design pattern
 - ⚡ React Query for data fetching
 - 🔄 Recoil for state management
+- 🎨 NativeWind (Tailwind CSS for React Native)
+- 🔒 HTTPS with Let's Encrypt SSL
+- 📱 Full-screen card layout
+- ✨ Custom SVG icons and animations
 
 ## Tech Stack
 - React Native (Expo)
 - TypeScript
+- NativeWind v4 (Tailwind CSS)
 - TanStack Query (React Query)
 - Recoil
 - React Navigation
 - Axios
+- react-native-deck-swiper
 
 ## Quick Start
 
@@ -37,9 +43,14 @@ npm run web
 ```
 
 ## API Configuration
-The app connects to: `http://103.103.23.174/api`
+The app connects to: `https://amangly.duckdns.org/api`
 
-Hardcoded user_id: `1` (for MVP testing)
+- **Domain**: amangly.duckdns.org
+- **SSL**: Let's Encrypt certificate (auto-renews)
+- **Hardcoded user_id**: `1` (for MVP testing)
+
+### HTTPS Setup
+For backend HTTPS setup, see `scripts/setup-https.sh` or `HTTPS_SETUP.md`
 
 ## Project Structure
 ```
@@ -63,6 +74,14 @@ src/
 - **React Navigation**: Bottom tabs + Stack navigation
 
 ## Screens
-1. **Splash Screen**: 2.5s app intro
-2. **Main Screen**: Swipe cards (like/dislike)
-3. **Likes Screen**: View liked profiles (no swipe)
+1. **Splash Screen**: 1.5s app intro with fade animation
+2. **Main Screen**: Full-screen swipe cards with LIKE/NOPE/SUPER LIKE
+3. **Likes Screen**: 2-column grid of liked profiles
+
+## Key Components
+- **ProfileCard**: Full-screen card with gradient overlay
+- **CardDeck**: Swipeable deck with overlay labels
+- **ProfileGridCard**: Compact 2-column grid item
+- **ActionButton**: Circular gradient buttons (✕, ★, ♥)
+- **FlameIcon**: Custom SVG flame for Discover tab
+- **HeartIcon**: Custom SVG heart for Likes tab
