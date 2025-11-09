@@ -7,9 +7,9 @@
 type Environment = 'development' | 'production';
 
 // Change this to 'production' when deploying
-const ENVIRONMENT: Environment = 'development';
+const ENVIRONMENT = 'development' as Environment;
 
-const config = {
+const config: Record<Environment, { API_BASE_URL: string; BASE_URL: string }> = {
   development: {
     API_BASE_URL: 'http://localhost:8000/api',
     BASE_URL: 'http://localhost:8000',
