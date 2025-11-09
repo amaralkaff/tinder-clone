@@ -14,10 +14,14 @@ class Person extends Model
         'name',
         'age',
         'location',
+        'popular_profile_email_sent',
+        'popular_profile_email_sent_at',
     ];
 
     protected $casts = [
         'age' => 'integer',
+        'popular_profile_email_sent' => 'boolean',
+        'popular_profile_email_sent_at' => 'datetime',
     ];
 
     /**
