@@ -1,6 +1,8 @@
-# Documentation files (exclude from git)
+# Documentation files
 docs/
-DEPLOYMENT-STATUS.md
+*.md
+!README.md
+!**/README.md
 
 # Laravel specific
 backend/.env
@@ -41,3 +43,10 @@ backend/composer.lock
 # NPM
 package-lock.json
 yarn.lock
+
+# React Native / Expo
+mobile-app/node_modules/
+mobile-app/.expo/
+mobile-app/dist/
+mobile-app/web-build/
+mobile-app/.DS_Store
