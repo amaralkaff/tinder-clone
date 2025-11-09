@@ -1,0 +1,43 @@
+# Documentation files (exclude from git)
+docs/
+DEPLOYMENT-STATUS.md
+
+# Laravel specific
+backend/.env
+backend/.env.backup
+backend/.phpunit.result.cache
+backend/Homestead.json
+backend/Homestead.yaml
+backend/npm-debug.log
+backend/yarn-error.log
+backend/.DS_Store
+backend/Thumbs.db
+
+# Laravel directories
+backend/node_modules/
+backend/public/hot
+backend/public/storage
+backend/storage/*.key
+backend/vendor/
+
+# Laravel files
+backend/storage/logs/
+backend/storage/framework/cache/
+backend/storage/framework/sessions/
+backend/storage/framework/testing/
+backend/storage/framework/views/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Composer
+backend/composer.lock
+
+# NPM
+package-lock.json
+yarn.lock
