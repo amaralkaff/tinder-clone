@@ -1,44 +1,69 @@
 import React, { useRef, useState } from 'react';
-import { View, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import Swiper from 'react-native-deck-swiper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Person } from '../../types';
 import { ProfileCard } from '../molecules/ProfileCard';
+import { ActionButton } from '../atoms/ActionButton';
 import { Text } from '../atoms/Text';
-import { COLORS, SPACING } from '../../constants';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 interface CardDeckProps {
   people: Person[];
   onSwipeRight: (personId: number) => void;
   onSwipeLeft: (personId: number) => void;
   isLoading?: boolean;
+  error?: Error | null;
+  onRetry?: () => void;
 }
 
 export const CardDeck: React.FC<CardDeckProps> = ({
   people,
   onSwipeRight,
   onSwipeLeft,
-  isLoading = false
+  isLoading = false,
+  error,
+  onRetry,
 }) => {
   const swiperRef = useRef<Swiper<Person>>(null);
   const [cardIndex, setCardIndex] = useState(0);
+  const insets = useSafeAreaInsets();
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" color="#fe3c72" />
+        <Text className="text-base text-gray-500 mt-4">Loading profiles...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View className="flex-1 items-center justify-center px-8">
+        <Text className="text-2xl font-bold text-red-500 text-center mb-3">
+          Connection Error
+        </Text>
+        <Text className="text-base text-gray-600 text-center mb-6">
+          {error.message || 'Failed to load profiles. Please check your connection.'}
+        </Text>
+        {onRetry && (
+          <ActionButton
+            icon="🔄"
+            onPress={onRetry}
+            variant="like"
+          />
+        )}
       </View>
     );
   }
 
   if (!people || people.length === 0) {
     return (
-      <View style={styles.emptyContainer}>
-        <Text variant="heading" color={COLORS.text}>
+      <View className="flex-1 items-center justify-center px-8">
+        <Text className="text-2xl font-bold text-gray-700 text-center mb-3">
           No more profiles
         </Text>
-        <Text variant="body" color={COLORS.text} style={styles.emptyText}>
+        <Text className="text-base text-gray-500 text-center">
           Check back later for new recommendations
         </Text>
       </View>
@@ -46,103 +71,113 @@ export const CardDeck: React.FC<CardDeckProps> = ({
   }
 
   const handleSwipeRight = (index: number) => {
-    const person = people[index];
-    onSwipeRight(person.id);
+    onSwipeRight(people[index].id);
     setCardIndex(index + 1);
   };
 
   const handleSwipeLeft = (index: number) => {
-    const person = people[index];
-    onSwipeLeft(person.id);
+    onSwipeLeft(people[index].id);
     setCardIndex(index + 1);
   };
 
   return (
-    <View style={styles.container}>
-      <Swiper
-        ref={swiperRef}
-        cards={people}
-        renderCard={(person) => <ProfileCard person={person} />}
-        onSwipedRight={handleSwipeRight}
-        onSwipedLeft={handleSwipeLeft}
-        cardIndex={cardIndex}
-        backgroundColor="transparent"
-        stackSize={3}
-        stackSeparation={15}
-        stackScale={10}
-        disableBottomSwipe
-        disableTopSwipe
-        overlayLabels={{
-          left: {
-            title: 'NOPE',
-            style: {
-              label: {
-                backgroundColor: COLORS.nope,
-                borderColor: COLORS.nope,
-                color: COLORS.white,
-                borderWidth: 1,
-                fontSize: 24,
-                fontWeight: 'bold',
-                padding: 10,
-              },
-              wrapper: {
-                flexDirection: 'column',
-                alignItems: 'flex-end',
-                justifyContent: 'flex-start',
-                marginTop: 30,
-                marginLeft: -30,
-              },
-            },
-          },
-          right: {
-            title: 'LIKE',
-            style: {
-              label: {
-                backgroundColor: COLORS.like,
-                borderColor: COLORS.like,
-                color: COLORS.white,
-                borderWidth: 1,
-                fontSize: 24,
-                fontWeight: 'bold',
-                padding: 10,
-              },
-              wrapper: {
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                justifyContent: 'flex-start',
-                marginTop: 30,
-                marginLeft: 30,
+    <View className="flex-1">
+      <View className="flex-1">
+        <Swiper
+          ref={swiperRef}
+          cards={people}
+          renderCard={(person) => <ProfileCard person={person} />}
+          onSwipedRight={handleSwipeRight}
+          onSwipedLeft={handleSwipeLeft}
+          cardIndex={cardIndex}
+          backgroundColor="transparent"
+          stackSize={3}
+          stackSeparation={15}
+          stackScale={5}
+          cardVerticalMargin={60}
+          cardHorizontalMargin={20}
+          disableBottomSwipe
+          overlayLabels={{
+            left: {
+              title: 'NOPE',
+              style: {
+                label: {
+                  backgroundColor: 'transparent',
+                  borderColor: '#ec5e6f',
+                  color: '#ec5e6f',
+                  borderWidth: 3,
+                  fontSize: 32,
+                  fontWeight: 'bold',
+                  padding: 10,
+                  borderRadius: 8,
+                },
+                wrapper: {
+                  flexDirection: 'column',
+                  alignItems: 'flex-end',
+                  justifyContent: 'flex-start',
+                  marginTop: 40,
+                  marginLeft: -40,
+                },
               },
             },
-          },
-        }}
-        animateOverlayLabelsOpacity
-        animateCardOpacity
-        swipeBackCard
-      />
+            right: {
+              title: 'LIKE',
+              style: {
+                label: {
+                  backgroundColor: 'transparent',
+                  borderColor: '#01df8a',
+                  color: '#01df8a',
+                  borderWidth: 3,
+                  fontSize: 32,
+                  fontWeight: 'bold',
+                  padding: 10,
+                  borderRadius: 8,
+                },
+                wrapper: {
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  justifyContent: 'flex-start',
+                  marginTop: 40,
+                  marginLeft: 40,
+                },
+              },
+            },
+            top: {
+              title: 'SUPER LIKE',
+              style: {
+                label: {
+                  backgroundColor: 'transparent',
+                  borderColor: '#3ab4f2',
+                  color: '#3ab4f2',
+                  borderWidth: 3,
+                  fontSize: 28,
+                  fontWeight: 'bold',
+                  padding: 10,
+                  borderRadius: 8,
+                },
+                wrapper: {
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                },
+              },
+            },
+          }}
+          animateOverlayLabelsOpacity
+          animateCardOpacity
+          swipeBackCard
+        />
+      </View>
+
+      {/* Action Buttons */}
+      <View
+        className="flex-row justify-around items-center mx-8 mb-20"
+        style={{ bottom: insets.bottom }}
+      >
+        <ActionButton icon="✕" variant="nope" onPress={() => swiperRef.current?.swipeLeft()} />
+        <ActionButton icon="★" variant="superlike" onPress={() => swiperRef.current?.swipeTop()} />
+        <ActionButton icon="♥" variant="like" onPress={() => swiperRef.current?.swipeRight()} />
+      </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  loadingContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: SPACING.xl,
-  },
-  emptyText: {
-    marginTop: SPACING.md,
-    textAlign: 'center',
-  },
-});

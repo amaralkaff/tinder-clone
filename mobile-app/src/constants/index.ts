@@ -1,5 +1,6 @@
 // API Configuration
-export const API_BASE_URL = 'http://103.103.23.174/api';
+export const API_BASE_URL = 'https://amangly.duckdns.org/api';
+export const BASE_URL = 'https://amangly.duckdns.org';
 export const HARDCODED_USER_ID = 1;
 export const DEFAULT_PER_PAGE = 15;
 

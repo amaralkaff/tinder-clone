@@ -1,43 +1,34 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
-import { COLORS, SPACING } from '../../constants';
+import { TouchableOpacity, ViewStyle } from 'react-native';
 import { Text } from './Text';
 
 interface ActionButtonProps {
-  label: string;
+  icon: string;
   onPress: () => void;
-  variant: 'like' | 'nope';
+  variant: 'like' | 'nope' | 'superlike';
   style?: ViewStyle;
 }
 
 export const ActionButton: React.FC<ActionButtonProps> = ({
-  label,
+  icon,
   onPress,
   variant,
-  style
+  style,
 }) => {
-  const backgroundColor = variant === 'like' ? COLORS.like : COLORS.nope;
-
   return (
     <TouchableOpacity
-      style={[styles.button, { backgroundColor }, style]}
+      className={`rounded-full items-center justify-center border-4 border-white ${
+        variant === 'like'
+          ? 'w-20 h-20 bg-emerald-400'
+          : variant === 'nope'
+          ? 'w-16 h-16 bg-rose-500'
+          : 'w-14 h-14 bg-sky-400'
+      }`}
+      style={[{ shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 8 }, style]}
       onPress={onPress}
-      activeOpacity={0.7}
+      activeOpacity={0.8}
     >
-      <Text variant="body" color={COLORS.white}>
-        {label}
-      </Text>
+      <Text className={variant === 'like' ? 'text-3xl' : 'text-2xl'}>{icon}</Text>
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    paddingHorizontal: SPACING.lg,
-    paddingVertical: SPACING.md,
-    borderRadius: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minWidth: 100,
-  },
-});

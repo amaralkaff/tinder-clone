@@ -1,18 +1,25 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CardDeck } from '../components/organisms/CardDeck';
-import { Text } from '../components/atoms/Text';
 import { useRecommendations, useLikePerson, useDislikePerson } from '../services/queries';
-import { COLORS, SPACING } from '../constants';
 
 export const MainScreen: React.FC = () => {
-  const { data, isLoading, refetch } = useRecommendations(1, 15);
+  const insets = useSafeAreaInsets();
+  const { data, isLoading, error, refetch } = useRecommendations(1, 15);
   const likeMutation = useLikePerson();
   const dislikeMutation = useDislikePerson();
 
   const people = data?.data || [];
 
-  // Refetch recommendations when we run low on cards
+  // Debug logging
+  useEffect(() => {
+    console.log('MainScreen - isLoading:', isLoading);
+    console.log('MainScreen - error:', error);
+    console.log('MainScreen - data:', data);
+    console.log('MainScreen - people count:', people.length);
+  }, [isLoading, error, data, people]);
+
   useEffect(() => {
     if (people.length < 3 && !isLoading) {
       refetch();
@@ -36,34 +43,18 @@ export const MainScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text variant="heading" color={COLORS.primary}>
-          🔥 Discover
-        </Text>
-      </View>
-      <View style={styles.content}>
-        <CardDeck
-          people={people}
-          onSwipeRight={handleSwipeRight}
-          onSwipeLeft={handleSwipeLeft}
-          isLoading={isLoading}
-        />
-      </View>
-    </SafeAreaView>
+    <View
+      className="flex-1 bg-gray-50"
+      style={{ paddingTop: insets.top }}
+    >
+      <CardDeck
+        people={people}
+        onSwipeRight={handleSwipeRight}
+        onSwipeLeft={handleSwipeLeft}
+        isLoading={isLoading}
+        error={error}
+        onRetry={refetch}
+      />
+    </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  header: {
-    padding: SPACING.lg,
-    alignItems: 'center',
-  },
-  content: {
-    flex: 1,
-  },
-});

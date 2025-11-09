@@ -1,6 +1,7 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RecoilRoot } from 'recoil';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -22,10 +23,12 @@ interface AppProvidersProps {
 
 export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <RecoilRoot>
-        {children}
-      </RecoilRoot>
-    </QueryClientProvider>
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <RecoilRoot>
+          {children}
+        </RecoilRoot>
+      </QueryClientProvider>
+    </SafeAreaProvider>
   );
 };

@@ -1,58 +1,37 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { Text } from '../components/atoms/Text';
-import { COLORS } from '../constants';
 
 type SplashScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Splash'>;
 
 export const SplashScreen: React.FC = () => {
   const navigation = useNavigation<SplashScreenNavigationProp>();
+  const fadeAnim = new Animated.Value(0);
 
   useEffect(() => {
-    // Navigate to main screen after 2.5 seconds
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 600,
+      useNativeDriver: true,
+    }).start();
+
     const timer = setTimeout(() => {
       navigation.replace('MainTabs');
-    }, 2500);
+    }, 1500);
 
     return () => clearTimeout(timer);
-  }, [navigation]);
+  }, [navigation, fadeAnim]);
 
   return (
-    <View style={styles.container}>
-      <Text variant="heading" color={COLORS.primary} style={styles.logo}>
-        🔥
-      </Text>
-      <Text variant="heading" color={COLORS.text} style={styles.title}>
-        Tinder Clone
-      </Text>
-      <Text variant="body" color={COLORS.text} style={styles.subtitle}>
-        Find your match
-      </Text>
+    <View className="flex-1 bg-white items-center justify-center">
+      <Animated.View style={{ opacity: fadeAnim }} className="items-center">
+        <Text className="text-8xl mb-5">🔥</Text>
+        <Text className="text-2xl font-bold text-pink-500 mb-2">Tinder Clone</Text>
+        <Text className="text-base text-gray-500">Find your match</Text>
+      </Animated.View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logo: {
-    fontSize: 80,
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 32,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: COLORS.text,
-    opacity: 0.7,
-  },
-});

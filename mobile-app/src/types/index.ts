@@ -2,7 +2,7 @@
 export interface Picture {
   id: number;
   person_id: number;
-  url: string;
+  image_url: string;
   order: number;
   created_at: string;
   updated_at: string;
@@ -13,6 +13,9 @@ export interface Person {
   name: string;
   age: number;
   location: string;
+  bio?: string;
+  popular_profile_email_sent: boolean;
+  popular_profile_email_sent_at: string | null;
   created_at: string;
   updated_at: string;
   pictures: Picture[];

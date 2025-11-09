@@ -1,35 +1,33 @@
 import React from 'react';
-import { Text as RNText, TextStyle, StyleSheet } from 'react-native';
-import { COLORS, FONTS } from '../../constants';
+import { Text as RNText, TextStyle, TextProps as RNTextProps } from 'react-native';
 
-interface TextProps {
+interface TextProps extends Omit<RNTextProps, 'style'> {
   children: React.ReactNode;
   variant?: 'heading' | 'body' | 'small';
   color?: string;
   style?: TextStyle;
+  className?: string;
 }
 
 export const Text: React.FC<TextProps> = ({
   children,
   variant = 'body',
-  color = COLORS.text,
-  style
+  color,
+  style,
+  className,
+  ...rest
 }) => {
-  const textStyle = variant === 'heading'
-    ? FONTS.heading
+  const variantClass = variant === 'heading'
+    ? 'text-2xl font-bold'
     : variant === 'small'
-    ? FONTS.small
-    : FONTS.body;
+    ? 'text-sm'
+    : 'text-base';
+
+  const textColor = color ? { color } : {};
 
   return (
-    <RNText style={[styles.text, textStyle, { color }, style]}>
+    <RNText {...rest} className={`${variantClass} ${className || ''}`} style={[textColor, style]}>
       {children}
     </RNText>
   );
 };
-
-const styles = StyleSheet.create({
-  text: {
-    fontFamily: 'System',
-  },
-});

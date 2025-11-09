@@ -1,9 +1,8 @@
 import React from 'react';
-import { FlatList, StyleSheet, View, ActivityIndicator, RefreshControl } from 'react-native';
+import { FlatList, View, ActivityIndicator, RefreshControl } from 'react-native';
 import { Person } from '../../types';
 import { ProfileCard } from '../molecules/ProfileCard';
 import { Text } from '../atoms/Text';
-import { COLORS, SPACING } from '../../constants';
 
 interface ProfileListProps {
   people: Person[];
@@ -20,19 +19,19 @@ export const ProfileList: React.FC<ProfileListProps> = ({
 }) => {
   if (isLoading && !refreshing) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" color="#fe3c72" />
       </View>
     );
   }
 
   if (!people || people.length === 0) {
     return (
-      <View style={styles.emptyContainer}>
-        <Text variant="heading" color={COLORS.text}>
+      <View className="flex-1 items-center justify-center p-8">
+        <Text className="text-2xl font-bold text-gray-700 text-center mb-4">
           No likes yet
         </Text>
-        <Text variant="body" color={COLORS.text} style={styles.emptyText}>
+        <Text className="text-base text-gray-500 text-center">
           Start swiping to find your matches
         </Text>
       </View>
@@ -43,50 +42,22 @@ export const ProfileList: React.FC<ProfileListProps> = ({
     <FlatList
       data={people}
       renderItem={({ item }) => (
-        <View style={styles.cardContainer}>
-          <ProfileCard person={item} style={styles.card} />
+        <View className="mb-4 items-center">
+          <ProfileCard person={item} />
         </View>
       )}
       keyExtractor={(item) => item.id.toString()}
-      contentContainerStyle={styles.listContent}
+      className="p-4"
       showsVerticalScrollIndicator={false}
       refreshControl={
         onRefresh ? (
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor={COLORS.primary}
+            tintColor="#fe3c72"
           />
         ) : undefined
       }
     />
   );
 };
-
-const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: SPACING.xl,
-  },
-  emptyText: {
-    marginTop: SPACING.md,
-    textAlign: 'center',
-  },
-  listContent: {
-    padding: SPACING.md,
-  },
-  cardContainer: {
-    marginBottom: SPACING.md,
-    alignItems: 'center',
-  },
-  card: {
-    width: '100%',
-  },
-});

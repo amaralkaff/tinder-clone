@@ -1,13 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions, ViewStyle } from 'react-native';
+import { View, ViewStyle } from 'react-native';
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Person } from '../../types';
-import { COLORS, SPACING } from '../../constants';
 import { Text } from '../atoms/Text';
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const CARD_HEIGHT = SCREEN_HEIGHT * 0.7;
-const CARD_WIDTH = SCREEN_WIDTH * 0.9;
+import { BASE_URL } from '../../constants';
 
 interface ProfileCardProps {
   person: Person;
@@ -15,57 +12,50 @@ interface ProfileCardProps {
 }
 
 export const ProfileCard: React.FC<ProfileCardProps> = ({ person, style }) => {
-  const primaryPicture = person.pictures?.[0]?.url || 'https://via.placeholder.com/400';
+  const primaryPicture = person.pictures?.[0]?.image_url
+    ? `${BASE_URL}${person.pictures[0].image_url}`
+    : 'https://via.placeholder.com/400';
+
+  // Debug logging
+  console.log('ProfileCard - Person:', person.name);
+  console.log('ProfileCard - Image URL:', primaryPicture);
 
   return (
-    <View style={[styles.card, style]}>
+    <View
+      className="w-full h-full rounded-2xl bg-white overflow-hidden"
+      style={[
+        {
+          shadowColor: '#000',
+          shadowOpacity: 0.12,
+          shadowRadius: 8,
+          elevation: 4,
+        },
+        style,
+      ]}
+    >
       <Image
         source={{ uri: primaryPicture }}
-        style={styles.image}
+        className="w-full h-full"
         contentFit="cover"
-        transition={200}
       />
-      <View style={styles.infoContainer}>
-        <Text variant="heading" color={COLORS.white}>
+      <LinearGradient
+        colors={['transparent', 'rgba(0,0,0,0.3)', 'rgba(0,0,0,0.7)']}
+        className="absolute bottom-0 left-0 right-0 p-4 pb-6"
+      >
+        <Text className="text-3xl font-bold text-white mb-1">
           {person.name}, {person.age}
         </Text>
-        <Text variant="body" color={COLORS.white} style={styles.location}>
-          {person.location}
-        </Text>
-      </View>
+        {person.location && (
+          <Text className="text-base text-white opacity-90">
+            {person.location}
+          </Text>
+        )}
+        {person.bio && (
+          <Text className="text-sm text-white opacity-85 mt-2" numberOfLines={2}>
+            {person.bio}
+          </Text>
+        )}
+      </LinearGradient>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  card: {
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT,
-    borderRadius: 20,
-    backgroundColor: COLORS.white,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    overflow: 'hidden',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-  infoContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: SPACING.lg,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-  },
-  location: {
-    marginTop: SPACING.xs,
-  },
-});
