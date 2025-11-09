@@ -1,6 +1,8 @@
+import { ENV } from '../config/environment';
+
 // API Configuration
-export const API_BASE_URL = 'https://amangly.duckdns.org/api';
-export const BASE_URL = 'https://amangly.duckdns.org';
+export const API_BASE_URL = ENV.API_BASE_URL;
+export const BASE_URL = ENV.BASE_URL;
 export const HARDCODED_USER_ID = 1;
 export const DEFAULT_PER_PAGE = 15;
 

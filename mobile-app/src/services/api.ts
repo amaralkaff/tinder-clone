@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { API_BASE_URL, HARDCODED_USER_ID, DEFAULT_PER_PAGE } from '../constants';
-import { ApiResponse, Person, LikeRequest, DislikeRequest } from '../types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_BASE_URL, DEFAULT_PER_PAGE } from '../constants';
+import { ApiResponse, Person } from '../types';
 
 // Create axios instance with base configuration
 const api = axios.create({
@@ -12,13 +13,26 @@ const api = axios.create({
   },
 });
 
+// Add auth token to requests
+api.interceptors.request.use(
+  async (config) => {
+    const token = await AsyncStorage.getItem('@auth_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // API Methods
 export const apiService = {
   // Get recommendations for swiping
   getRecommendations: async (page = 1, perPage = DEFAULT_PER_PAGE): Promise<ApiResponse<Person[]>> => {
     const response = await api.get<ApiResponse<Person[]>>('/recommendations', {
       params: {
-        user_id: HARDCODED_USER_ID,
         per_page: perPage,
         page,
       },
@@ -28,21 +42,17 @@ export const apiService = {
 
   // Like a person
   likePerson: async (likedId: number): Promise<ApiResponse<any>> => {
-    const payload: LikeRequest = {
-      liker_id: HARDCODED_USER_ID,
+    const response = await api.post<ApiResponse<any>>('/likes', {
       liked_id: likedId,
-    };
-    const response = await api.post<ApiResponse<any>>('/likes', payload);
+    });
     return response.data;
   },
 
   // Dislike a person
   dislikePerson: async (dislikedId: number): Promise<ApiResponse<any>> => {
-    const payload: DislikeRequest = {
-      disliker_id: HARDCODED_USER_ID,
+    const response = await api.post<ApiResponse<any>>('/dislikes', {
       disliked_id: dislikedId,
-    };
-    const response = await api.post<ApiResponse<any>>('/dislikes', payload);
+    });
     return response.data;
   },
 
@@ -50,7 +60,6 @@ export const apiService = {
   getLikedPeople: async (page = 1, perPage = DEFAULT_PER_PAGE): Promise<ApiResponse<Person[]>> => {
     const response = await api.get<ApiResponse<Person[]>>('/liked-people', {
       params: {
-        user_id: HARDCODED_USER_ID,
         per_page: perPage,
         page,
       },

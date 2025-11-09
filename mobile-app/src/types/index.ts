@@ -13,7 +13,6 @@ export interface Person {
   name: string;
   age: number;
   location: string;
-  bio?: string;
   popular_profile_email_sent: boolean;
   popular_profile_email_sent_at: string | null;
   created_at: string;
@@ -36,19 +35,12 @@ export interface ApiResponse<T> {
   pagination?: PaginationMeta;
 }
 
-export interface LikeRequest {
-  liker_id: number;
-  liked_id: number;
-}
-
-export interface DislikeRequest {
-  disliker_id: number;
-  disliked_id: number;
-}
 
 // Navigation Types
 export type RootStackParamList = {
   Splash: undefined;
+  Login: undefined;
+  Register: undefined;
   MainTabs: undefined;
 };
 

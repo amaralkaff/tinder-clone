@@ -16,43 +16,92 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ person, style }) => {
     ? `${BASE_URL}${person.pictures[0].image_url}`
     : 'https://via.placeholder.com/400';
 
-  // Debug logging
-  console.log('ProfileCard - Person:', person.name);
-  console.log('ProfileCard - Image URL:', primaryPicture);
-
   return (
     <View
-      className="w-full h-full rounded-2xl bg-white overflow-hidden"
       style={[
         {
+          width: '100%',
+          height: 500,
+          borderRadius: 12,
+          borderTopLeftRadius: 12,
+          borderTopRightRadius: 12,
+          borderBottomLeftRadius: 12,
+          borderBottomRightRadius: 12,
+          backgroundColor: '#fff',
+          overflow: 'hidden',
           shadowColor: '#000',
-          shadowOpacity: 0.12,
-          shadowRadius: 8,
-          elevation: 4,
+          shadowOpacity: 0.2,
+          shadowRadius: 10,
+          shadowOffset: { width: 0, height: 4 },
+          elevation: 5,
         },
         style,
       ]}
     >
       <Image
         source={{ uri: primaryPicture }}
-        className="w-full h-full"
+        style={{
+          width: '100%',
+          height: '100%'
+        }}
         contentFit="cover"
+        cachePolicy="memory-disk"
+        transition={200}
+        onError={(error) => {
+          console.error('Image load error:', error.error);
+        }}
       />
+
+      {/* Simple bottom gradient overlay */}
       <LinearGradient
-        colors={['transparent', 'rgba(0,0,0,0.3)', 'rgba(0,0,0,0.7)']}
-        className="absolute bottom-0 left-0 right-0 p-4 pb-6"
+        colors={['transparent', 'rgba(0,0,0,0.85)']}
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: 180,
+          justifyContent: 'flex-end',
+          paddingHorizontal: 28,
+          paddingBottom: 40,
+        }}
       >
-        <Text className="text-3xl font-bold text-white mb-1">
+        {/* Name and Age */}
+        <Text
+          style={{
+            fontSize: 30,
+            fontWeight: 'bold',
+            color: '#FFFFFF',
+            marginBottom: 8,
+            textShadowColor: 'rgba(0,0,0,0.95)',
+            textShadowOffset: { width: 0, height: 2 },
+            textShadowRadius: 5,
+            letterSpacing: 0.1,
+            lineHeight: 36,
+          }}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
           {person.name}, {person.age}
         </Text>
+
+        {/* Location */}
         {person.location && (
-          <Text className="text-base text-white opacity-90">
-            {person.location}
-          </Text>
-        )}
-        {person.bio && (
-          <Text className="text-sm text-white opacity-85 mt-2" numberOfLines={2}>
-            {person.bio}
+          <Text
+            style={{
+              fontSize: 15,
+              color: '#FFFFFF',
+              opacity: 1,
+              textShadowColor: 'rgba(0,0,0,0.8)',
+              textShadowOffset: { width: 0, height: 1 },
+              textShadowRadius: 4,
+              letterSpacing: 0.05,
+              lineHeight: 20,
+            }}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            📍 {person.location}
           </Text>
         )}
       </LinearGradient>

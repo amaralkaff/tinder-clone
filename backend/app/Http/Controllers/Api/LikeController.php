@@ -52,9 +52,10 @@ class LikeController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        $userId = $request->user()->id;
+
         $validator = Validator::make($request->all(), [
-            'liker_id' => 'required|integer|exists:people,id',
-            'liked_id' => 'required|integer|exists:people,id|different:liker_id',
+            'liked_id' => 'required|integer|exists:people,id',
         ]);
 
         if ($validator->fails()) {
@@ -65,7 +66,7 @@ class LikeController extends Controller
         }
 
         // Check if already liked
-        $existingLike = Like::where('liker_id', $request->liker_id)
+        $existingLike = Like::where('liker_id', $userId)
                            ->where('liked_id', $request->liked_id)
                            ->first();
 
@@ -77,7 +78,7 @@ class LikeController extends Controller
         }
 
         $like = Like::create([
-            'liker_id' => $request->liker_id,
+            'liker_id' => $userId,
             'liked_id' => $request->liked_id,
         ]);
 
@@ -134,15 +135,8 @@ class LikeController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $userId = $request->input('user_id');
+        $userId = $request->user()->id;
         $perPage = $request->input('per_page', 15);
-
-        if (!$userId) {
-            return response()->json([
-                'success' => false,
-                'message' => 'user_id is required',
-            ], 400);
-        }
 
         $likedPeople = Person::whereIn('id', function($query) use ($userId) {
             $query->select('liked_id')

@@ -11,6 +11,7 @@ interface CardDeckProps {
   people: Person[];
   onSwipeRight: (personId: number) => void;
   onSwipeLeft: (personId: number) => void;
+  onLoadMore?: () => void;
   isLoading?: boolean;
   error?: Error | null;
   onRetry?: () => void;
@@ -20,13 +21,21 @@ export const CardDeck: React.FC<CardDeckProps> = ({
   people,
   onSwipeRight,
   onSwipeLeft,
+  onLoadMore,
   isLoading = false,
   error,
   onRetry,
 }) => {
   const swiperRef = useRef<Swiper<Person>>(null);
   const [cardIndex, setCardIndex] = useState(0);
+  const [swipedIds, setSwipedIds] = useState<Set<number>>(new Set());
   const insets = useSafeAreaInsets();
+
+  // Reset cardIndex and swipedIds when people array changes
+  React.useEffect(() => {
+    setCardIndex(0);
+    setSwipedIds(new Set());
+  }, [people]);
 
   if (isLoading) {
     return (
@@ -48,7 +57,6 @@ export const CardDeck: React.FC<CardDeckProps> = ({
         </Text>
         {onRetry && (
           <ActionButton
-            icon="🔄"
             onPress={onRetry}
             variant="like"
           />
@@ -71,32 +79,68 @@ export const CardDeck: React.FC<CardDeckProps> = ({
   }
 
   const handleSwipeRight = (index: number) => {
-    onSwipeRight(people[index].id);
+    // Safety check: ensure person exists at index
+    if (!people[index]) {
+      return;
+    }
+
+    const personId = people[index].id;
+
+    // Prevent duplicate swipes
+    if (swipedIds.has(personId)) {
+      return;
+    }
+
+    setSwipedIds(prev => new Set(prev).add(personId));
+    onSwipeRight(personId);
     setCardIndex(index + 1);
   };
 
   const handleSwipeLeft = (index: number) => {
-    onSwipeLeft(people[index].id);
+    // Safety check: ensure person exists at index
+    if (!people[index]) {
+      return;
+    }
+
+    const personId = people[index].id;
+
+    // Prevent duplicate swipes
+    if (swipedIds.has(personId)) {
+      return;
+    }
+
+    setSwipedIds(prev => new Set(prev).add(personId));
+    onSwipeLeft(personId);
     setCardIndex(index + 1);
   };
 
   return (
-    <View className="flex-1">
-      <View className="flex-1">
+    <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, marginBottom: 110 }}>
         <Swiper
+          key={`swiper-${people.map(p => p.id).join('-')}`}
           ref={swiperRef}
           cards={people}
-          renderCard={(person) => <ProfileCard person={person} />}
+          renderCard={(person) => {
+            if (!person) return null;
+            return <ProfileCard key={person.id} person={person} />;
+          }}
           onSwipedRight={handleSwipeRight}
           onSwipedLeft={handleSwipeLeft}
+          onSwipedAll={() => {
+            if (onLoadMore) {
+              onLoadMore();
+            }
+          }}
           cardIndex={cardIndex}
           backgroundColor="transparent"
           stackSize={3}
-          stackSeparation={15}
-          stackScale={5}
-          cardVerticalMargin={60}
-          cardHorizontalMargin={20}
+          stackSeparation={12}
+          stackScale={4}
+          cardVerticalMargin={45}
+          cardHorizontalMargin={16}
           disableBottomSwipe
+          infinite={false}
           overlayLabels={{
             left: {
               title: 'NOPE',
@@ -115,8 +159,8 @@ export const CardDeck: React.FC<CardDeckProps> = ({
                   flexDirection: 'column',
                   alignItems: 'flex-end',
                   justifyContent: 'flex-start',
-                  marginTop: 40,
-                  marginLeft: -40,
+                  marginTop: 55,
+                  marginLeft: -35,
                 },
               },
             },
@@ -137,8 +181,8 @@ export const CardDeck: React.FC<CardDeckProps> = ({
                   flexDirection: 'column',
                   alignItems: 'flex-start',
                   justifyContent: 'flex-start',
-                  marginTop: 40,
-                  marginLeft: 40,
+                  marginTop: 55,
+                  marginLeft: 35,
                 },
               },
             },
@@ -169,14 +213,41 @@ export const CardDeck: React.FC<CardDeckProps> = ({
         />
       </View>
 
-      {/* Action Buttons */}
+      {/* Action Buttons - Only Nope and Like (others marked with X) */}
       <View
-        className="flex-row justify-around items-center mx-8 mb-20"
-        style={{ bottom: insets.bottom }}
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 70,
+          paddingHorizontal: 20,
+          paddingBottom: insets.bottom + 20,
+          paddingTop: 12,
+          zIndex: 10,
+          elevation: 10,
+          backgroundColor: 'transparent',
+        }}
       >
-        <ActionButton icon="✕" variant="nope" onPress={() => swiperRef.current?.swipeLeft()} />
-        <ActionButton icon="★" variant="superlike" onPress={() => swiperRef.current?.swipeTop()} />
-        <ActionButton icon="♥" variant="like" onPress={() => swiperRef.current?.swipeRight()} />
+        <ActionButton
+          variant="nope"
+          onPress={() => {
+            if (swiperRef.current && cardIndex < people.length) {
+              swiperRef.current.swipeLeft();
+            }
+          }}
+        />
+        <ActionButton
+          variant="like"
+          onPress={() => {
+            if (swiperRef.current && cardIndex < people.length) {
+              swiperRef.current.swipeRight();
+            }
+          }}
+        />
       </View>
     </View>
   );

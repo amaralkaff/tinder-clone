@@ -40,9 +40,8 @@ export const useLikePerson = (): UseMutationResult<ApiResponse<any>, Error, numb
   return useMutation({
     mutationFn: (likedId: number) => apiService.likePerson(likedId),
     onSuccess: () => {
-      // Invalidate recommendations to fetch new profiles
-      queryClient.invalidateQueries({ queryKey: queryKeys.recommendations });
-      // Invalidate liked people to update the list
+      // Only invalidate liked people list, not recommendations
+      // Backend already filters out liked people from recommendations
       queryClient.invalidateQueries({ queryKey: queryKeys.likedPeople });
     },
   });
@@ -55,8 +54,9 @@ export const useDislikePerson = (): UseMutationResult<ApiResponse<any>, Error, n
   return useMutation({
     mutationFn: (dislikedId: number) => apiService.dislikePerson(dislikedId),
     onSuccess: () => {
-      // Invalidate recommendations to fetch new profiles
-      queryClient.invalidateQueries({ queryKey: queryKeys.recommendations });
+      // No need to invalidate recommendations
+      // Backend already filters out disliked people from recommendations
+      // Data will refresh naturally when user runs out of profiles
     },
   });
 };

@@ -1,9 +1,11 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SplashScreen } from '../screens/SplashScreen';
+import { LoginScreen } from '../screens/LoginScreen';
+import { RegisterScreen } from '../screens/RegisterScreen';
 import { MainScreen } from '../screens/MainScreen';
 import { LikesScreen } from '../screens/LikesScreen';
 import { RootStackParamList, MainTabsParamList } from '../types';
@@ -33,7 +35,15 @@ const MainTabs: React.FC = () => {
           tabBarLabel: 'Discover',
           tabBarIcon: ({ focused }) => (
             <View className="items-center justify-center">
-              <FlameIcon size={28} active={focused} />
+              <Image
+                source={{ uri: 'https://logos-world.net/wp-content/uploads/2020/09/Tinder-Emblem.png' }}
+                style={{
+                  width: 46,
+                  height: 46,
+                  tintColor: focused ? '#fe3c72' : '#9ca3af'
+                }}
+                resizeMode="contain"
+              />
             </View>
           ),
         }}
@@ -59,6 +69,8 @@ export const RootNavigator: React.FC = () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Splash" component={SplashScreen} />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="MainTabs" component={MainTabs} />
       </Stack.Navigator>
     </NavigationContainer>

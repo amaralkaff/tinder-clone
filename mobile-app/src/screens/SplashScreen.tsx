@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { Text } from '../components/atoms/Text';
+import { authStorage } from '../services/auth';
 
 type SplashScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Splash'>;
 
@@ -18,11 +19,16 @@ export const SplashScreen: React.FC = () => {
       useNativeDriver: true,
     }).start();
 
-    const timer = setTimeout(() => {
-      navigation.replace('MainTabs');
-    }, 1500);
+    const checkAuth = async () => {
+      const token = await authStorage.getToken();
+      const destination = token ? 'MainTabs' : 'Login';
 
-    return () => clearTimeout(timer);
+      setTimeout(() => {
+        navigation.replace(destination);
+      }, 1500);
+    };
+
+    checkAuth();
   }, [navigation, fadeAnim]);
 
   return (

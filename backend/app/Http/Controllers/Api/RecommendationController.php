@@ -51,24 +51,22 @@ class RecommendationController extends Controller
     public function index(Request $request): JsonResponse
     {
         $perPage = $request->input('per_page', 15);
-        $userId = $request->input('user_id'); // In real app, this would come from auth
+        $userId = $request->user()->id;
 
         $query = Person::with('pictures');
 
-        // If user_id is provided, exclude people they've already liked or disliked
-        if ($userId) {
-            $query->whereNotIn('id', function($q) use ($userId) {
-                $q->select('liked_id')
-                  ->from('likes')
-                  ->where('liker_id', $userId);
-            })
-            ->whereNotIn('id', function($q) use ($userId) {
-                $q->select('disliked_id')
-                  ->from('dislikes')
-                  ->where('disliker_id', $userId);
-            })
-            ->where('id', '!=', $userId);
-        }
+        // Exclude people the user has already liked or disliked
+        $query->whereNotIn('id', function($q) use ($userId) {
+            $q->select('liked_id')
+              ->from('likes')
+              ->where('liker_id', $userId);
+        })
+        ->whereNotIn('id', function($q) use ($userId) {
+            $q->select('disliked_id')
+              ->from('dislikes')
+              ->where('disliker_id', $userId);
+        })
+        ->where('id', '!=', $userId);
 
         $people = $query->orderBy('created_at', 'desc')
                        ->paginate($perPage);
