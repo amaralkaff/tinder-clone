@@ -1,76 +1,29 @@
 # Tinder Clone - PHP Laravel + React Native
 
-Full-stack dating app with swipe functionality, built with Laravel REST API backend and React Native mobile app.
+Dating app with swipe functionality built with Laravel backend and React Native mobile app.
 
-## Technology Stack
+## Stack
 
-### Backend (PHP Laravel)
-- Laravel 11.x
-- PHP 8.2+
-- MySQL 8.0
-- Laravel Sanctum (API Authentication)
-- L5-Swagger (API Documentation)
-- Queue Workers (Email Notifications)
+**Backend:** Laravel 11, PHP 8.2+, MySQL 8.0, Laravel Sanctum, Swagger
+**Mobile:** React Native (Expo), React Query, Atomic Design, TypeScript
 
-### Mobile (React Native)
-- React Native (Expo)
-- React Query (Data Fetching)
-- Atomic Design Pattern
-- TypeScript
+## Features (PRD Implementation)
 
-## Features Implementation
+### Backend
+**People Data:** name, age, pictures, location
 
-### Backend API Features
+**API Endpoints:**
+1. `GET /api/recommendations` - Paginated list of recommended people
+2. `POST /api/likes` - Like a person
+3. `POST /api/dislikes` - Dislike a person
+4. `GET /api/liked-people` - List of liked people
+5. **Cronjob** - Email admin when profile reaches 50+ likes (daily 9 AM)
 
-#### People Data Structure
-- **name** - Profile name
-- **age** - User age (18-100)
-- **pictures** - Multiple profile photos with ordering
-- **location** - User location
-
-#### Required API Endpoints
-
-1. **Recommendations** - `GET /api/recommendations`
-   - Paginated list of people to swipe
-   - Excludes already liked/disliked profiles
-   - Excludes user's own profile
-
-2. **Like Person** - `POST /api/likes`
-   - Swipe right functionality
-   - Prevents duplicate likes
-
-3. **Dislike Person** - `POST /api/dislikes`
-   - Swipe left functionality
-   - Prevents duplicate dislikes
-
-4. **Liked People List** - `GET /api/liked-people`
-   - Paginated list of liked profiles
-   - Includes profile pictures
-
-5. **Email Notification Cronjob**
-   - Daily check at 9:00 AM (Asia/Jakarta)
-   - Sends email to admin when profile reaches 50+ likes
-   - Prevents duplicate notifications
-
-### Mobile App Features
-
-1. **Splash Screen** - App loading screen with branding
-
-2. **Opponent Card (Main Screen)**
-   - Tinder-style card stack
-   - Swipe right (like) gesture
-   - Swipe left (nope) gesture
-   - Like/Nope buttons
-   - Profile details display
-
-3. **Authentication Flow**
-   - User registration
-   - Login/Logout
-   - Profile creation (mandatory after registration)
-
-4. **Liked Opponent List**
-   - Grid view of liked profiles
-   - Read-only (no swipe actions)
+### Mobile App
+1. Splash screen
+2. Opponent card (Tinder-style swipe)
+3. Authentication & profile setup
+4. Liked opponent list
 
 ## Quick Start
 
@@ -96,138 +49,44 @@ npm install
 npx expo start
 ```
 
-## Database Schema (RDB)
+## Database Schema
 
-**users** - Authentication
-- id, name, email, password, email_verified_at
+- `users` - Authentication (id, name, email, password)
+- `people` - Profiles (id, user_id, name, age, location)
+- `pictures` - Photos (id, person_id, image_url, order)
+- `likes` - (id, liker_id, liked_id)
+- `dislikes` - (id, disliker_id, disliked_id)
 
-**people** - Dating Profiles
-- id, user_id (FK), name, age, location, popular_profile_email_sent
+## API Documentation
 
-**pictures** - Profile Photos
-- id, person_id (FK), image_url, order
+**Swagger:** https://amangly.duckdns.org/api/documentation
 
-**likes** - Like Relationships
-- id, liker_id (FK), liked_id (FK)
+## Deployment
 
-**dislikes** - Dislike Relationships
-- id, disliker_id (FK), disliked_id (FK)
+**VPS:** Nginx + PHP-FPM 8.2
+**Domain:** https://amangly.duckdns.org
 
-## API Documentation (Swagger)
-
-**Local:** http://localhost:8000/api/documentation
-**Production:** https://amangly.duckdns.org/api/documentation
-
-All endpoints are documented with request/response examples and authentication requirements.
-
-## Deployment (VPS - Nginx)
-
-### VPS Configuration
-- **Server:** Nginx 1.18.0
-- **Domain:** https://amangly.duckdns.org
-- **SSL:** Let's Encrypt (HTTPS enabled)
-- **PHP-FPM:** 8.2
-
-### Cronjob Setup
-Add to crontab for Laravel scheduler:
+### Crontab
 ```bash
 * * * * * cd /home/amangly/tinder-clone/backend && php artisan schedule:run >> /dev/null 2>&1
 ```
 
-### Queue Worker Setup
-For email notifications, run:
+### Queue Worker
 ```bash
 php artisan queue:work --daemon
 ```
 
-Or add as systemd service for automatic restart.
+## Testing
 
-## Email Notifications
-
-### Configuration
-
-Configure in `.env`:
-```bash
-MAIL_MAILER=smtp
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587
-MAIL_USERNAME=your-email@gmail.com
-MAIL_PASSWORD=your-app-password
-MAIL_ADMIN_EMAIL=admin@yourdomain.com
-```
-
-### Threshold
-
-**Default:** 50 likes (as per PRD requirement)
-
-The threshold is configurable via command option for testing purposes.
-
-### Testing Email Notifications
-
-**Test with lower threshold (for testing only):**
-
+### Email Notifications
 ```bash
 cd backend
-
-# Test with 10 likes threshold
 php artisan profiles:check-popular --threshold=10
-
-# Process the queued email
 php artisan queue:work --once
 ```
 
-**Verify:**
-- Check admin email inbox for notification
-- Check logs: `backend/storage/logs/popular-profiles.log`
-- Check database: `popular_profile_email_sent = 1`
-
-**Reset for re-testing:**
-```bash
-mysql -u tinder_user -p -e "UPDATE people SET popular_profile_email_sent = 0 WHERE id = [profile_id];"
-```
-
-**Production:** Runs automatically daily at 9:00 AM with 50 likes threshold.
-
-## Environment Configuration
-
-### Backend (.env)
-```bash
-APP_URL=https://amangly.duckdns.org
-DB_DATABASE=tinder_clone
-DB_USERNAME=tinder_user
-DB_PASSWORD=your_password
-
-MAIL_ADMIN_EMAIL=admin@example.com
-QUEUE_CONNECTION=database
-```
-
-### Mobile (src/config/environment.ts)
-```typescript
-export const API_BASE_URL = 'https://amangly.duckdns.org/api'
-```
-
-## API Endpoints Summary
-
-### Public
-- `POST /api/register` - Create account
-- `POST /api/login` - Authenticate user
-
-### Protected (require Bearer token)
-- `GET /api/user` - Get authenticated user
-- `GET /api/profile` - Get user profile
-- `POST /api/profile` - Create profile
-- `PUT /api/profile` - Update profile
-- `POST /api/profile/pictures` - Upload photo
-- `DELETE /api/profile/pictures/{id}` - Delete photo
-- `GET /api/recommendations` - Get profiles to swipe
-- `POST /api/likes` - Like a profile
-- `POST /api/dislikes` - Dislike a profile
-- `GET /api/liked-people` - View liked profiles
+Default threshold: **50 likes** (PRD requirement)
 
 ## License
 
 MIT
-
----
-
-*This README was written by AI because the developer was too lazy to write proper documentation. At least it's comprehensive, right?* 😅
