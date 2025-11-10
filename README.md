@@ -199,3 +199,7 @@ export const API_BASE_URL = 'https://amangly.duckdns.org/api'
 ## License
 
 MIT
+
+---
+
+*This README was created with AI assistance to provide clear and comprehensive project documentation.*
