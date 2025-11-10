@@ -92,7 +92,7 @@ Default threshold: **50 likes** (PRD requirement)
 
 When a profile reaches the threshold, the admin receives an email notification:
 
-![Popular Profile Email Notification](mobile-app/assets/IMG_0940.PNG)
+<img src="mobile-app/assets/IMG_0940.PNG" alt="Popular Profile Email Notification" width="400">
 
 ## Demo Accounts
 
