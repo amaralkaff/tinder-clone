@@ -12,82 +12,71 @@
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
+            background-color: #f5f5f5;
         }
-        .header {
-            background: linear-gradient(135deg, #FE3C72 0%, #FF655B 100%);
-            color: white;
+        .container {
+            background: white;
             padding: 30px;
+            border-radius: 5px;
+        }
+        .logo {
             text-align: center;
-            border-radius: 10px 10px 0 0;
+            margin-bottom: 30px;
         }
-        .header h1 {
-            margin: 0;
-            font-size: 28px;
+        .logo img {
+            max-width: 150px;
+            height: auto;
         }
-        .content {
-            background: #f9f9f9;
-            padding: 30px;
-            border-radius: 0 0 10px 10px;
+        h1 {
+            color: #FE3C72;
+            font-size: 24px;
+            margin-bottom: 20px;
         }
         .profile-info {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #FE3C72;
             margin: 20px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .profile-info h2 {
-            margin-top: 0;
-            color: #FE3C72;
+        .profile-info p {
+            margin: 5px 0;
         }
-        .stat {
-            font-size: 24px;
+        .likes-count {
+            font-size: 20px;
             font-weight: bold;
             color: #FE3C72;
-            margin: 10px 0;
         }
         .footer {
-            text-align: center;
             margin-top: 30px;
-            color: #666;
-            font-size: 14px;
-        }
-        .emoji {
-            font-size: 48px;
-            margin: 20px 0;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #999;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Popular Profile Alert!</h1>
-        <div class="emoji">🔥</div>
-    </div>
-
-    <div class="content">
-        <h2>Great News!</h2>
-
-        <p>A profile on your platform has become extremely popular!</p>
-
-        <div class="profile-info">
-            <h2>{{ $person->name }}</h2>
-            <p><strong>Age:</strong> {{ $person->age }}</p>
-            <p><strong>Location:</strong> {{ $person->location }}</p>
-            <div class="stat">{{ $likesCount }} likes and counting!</div>
+    <div class="container">
+        <div class="logo">
+            <img src="{{ config('app.url') }}/tinder-logo.png" alt="Tinder Clone">
         </div>
 
-        <p>This profile has reached the milestone of <strong>{{ $likesCount }} likes</strong>, making it one of the most popular profiles on your platform.</p>
+        <h1>Popular Profile Alert</h1>
 
-        <p>You might want to:</p>
-        <ul>
-            <li>Review the profile for quality assurance</li>
-            <li>Consider featuring this profile</li>
-            <li>Analyze what makes this profile successful</li>
-        </ul>
+        <p>A profile has reached 50+ likes:</p>
+
+        <div class="profile-info">
+            <p><strong>Name:</strong> {{ $person->name }}</p>
+            <p><strong>Age:</strong> {{ $person->age }}</p>
+            <p><strong>Location:</strong> {{ $person->location }}</p>
+            <p class="likes-count">{{ $likesCount }} likes</p>
+        </div>
+
+        <p>This profile has become popular and may need review.</p>
 
         <div class="footer">
-            <p>This is an automated notification from your Tinder Clone application.</p>
-            <p>Generated on {{ now()->format('F d, Y \a\t h:i A') }}</p>
+            <p>Automated notification from Tinder Clone</p>
+            <p>{{ now()->format('Y-m-d H:i:s') }}</p>
         </div>
     </div>
 </body>
