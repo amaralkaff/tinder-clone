@@ -50,23 +50,31 @@ class RecommendationController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        $profile = $request->user()->person;
+
+        if (!$profile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Profile not found. Please create your profile first.',
+            ], 404);
+        }
+
         $perPage = $request->input('per_page', 15);
-        $userId = $request->user()->id;
 
         $query = Person::with('pictures');
 
         // Exclude people the user has already liked or disliked
-        $query->whereNotIn('id', function($q) use ($userId) {
+        $query->whereNotIn('id', function($q) use ($profile) {
             $q->select('liked_id')
               ->from('likes')
-              ->where('liker_id', $userId);
+              ->where('liker_id', $profile->id);
         })
-        ->whereNotIn('id', function($q) use ($userId) {
+        ->whereNotIn('id', function($q) use ($profile) {
             $q->select('disliked_id')
               ->from('dislikes')
-              ->where('disliker_id', $userId);
+              ->where('disliker_id', $profile->id);
         })
-        ->where('id', '!=', $userId);
+        ->where('id', '!=', $profile->id);
 
         $people = $query->orderBy('created_at', 'desc')
                        ->paginate($perPage);

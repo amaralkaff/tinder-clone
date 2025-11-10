@@ -51,7 +51,14 @@ class DislikeController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $userId = $request->user()->id;
+        $profile = $request->user()->person;
+
+        if (!$profile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Profile not found. Please create your profile first.',
+            ], 404);
+        }
 
         $validator = Validator::make($request->all(), [
             'disliked_id' => 'required|integer|exists:people,id',
@@ -65,7 +72,7 @@ class DislikeController extends Controller
         }
 
         // Check if already disliked
-        $existingDislike = Dislike::where('disliker_id', $userId)
+        $existingDislike = Dislike::where('disliker_id', $profile->id)
                                  ->where('disliked_id', $request->disliked_id)
                                  ->first();
 
@@ -77,7 +84,7 @@ class DislikeController extends Controller
         }
 
         $dislike = Dislike::create([
-            'disliker_id' => $userId,
+            'disliker_id' => $profile->id,
             'disliked_id' => $request->disliked_id,
         ]);
 

@@ -52,7 +52,14 @@ class LikeController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $userId = $request->user()->id;
+        $profile = $request->user()->person;
+
+        if (!$profile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Profile not found. Please create your profile first.',
+            ], 404);
+        }
 
         $validator = Validator::make($request->all(), [
             'liked_id' => 'required|integer|exists:people,id',
@@ -66,7 +73,7 @@ class LikeController extends Controller
         }
 
         // Check if already liked
-        $existingLike = Like::where('liker_id', $userId)
+        $existingLike = Like::where('liker_id', $profile->id)
                            ->where('liked_id', $request->liked_id)
                            ->first();
 
@@ -78,7 +85,7 @@ class LikeController extends Controller
         }
 
         $like = Like::create([
-            'liker_id' => $userId,
+            'liker_id' => $profile->id,
             'liked_id' => $request->liked_id,
         ]);
 
@@ -135,13 +142,21 @@ class LikeController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $userId = $request->user()->id;
+        $profile = $request->user()->person;
+
+        if (!$profile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Profile not found. Please create your profile first.',
+            ], 404);
+        }
+
         $perPage = $request->input('per_page', 15);
 
-        $likedPeople = Person::whereIn('id', function($query) use ($userId) {
+        $likedPeople = Person::whereIn('id', function($query) use ($profile) {
             $query->select('liked_id')
                   ->from('likes')
-                  ->where('liker_id', $userId);
+                  ->where('liker_id', $profile->id);
         })
         ->with('pictures')
         ->paginate($perPage);

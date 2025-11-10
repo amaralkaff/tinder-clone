@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Person extends Model
@@ -11,6 +12,7 @@ class Person extends Model
     protected $table = 'people';
 
     protected $fillable = [
+        'user_id',
         'name',
         'age',
         'location',
@@ -23,6 +25,14 @@ class Person extends Model
         'popular_profile_email_sent' => 'boolean',
         'popular_profile_email_sent_at' => 'datetime',
     ];
+
+    /**
+     * Get the user that owns this profile
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /**
      * Get all pictures for this person

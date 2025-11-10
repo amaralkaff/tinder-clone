@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RecommendationController;
 use App\Http\Controllers\Api\LikeController;
 use App\Http\Controllers\Api\DislikeController;
@@ -21,6 +22,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // Authentication
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
+
+    // Profile endpoints
+    Route::get('/profile', [ProfileController::class, 'show']);
+    Route::post('/profile', [ProfileController::class, 'store']);
+    Route::put('/profile', [ProfileController::class, 'update']);
+    Route::post('/profile/pictures', [ProfileController::class, 'uploadPicture']);
+    Route::delete('/profile/pictures/{id}', [ProfileController::class, 'deletePicture']);
 
     // Recommendations endpoint
     Route::get('/recommendations', [RecommendationController::class, 'index']);
