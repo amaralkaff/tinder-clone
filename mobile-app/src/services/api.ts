@@ -3,7 +3,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_BASE_URL, DEFAULT_PER_PAGE } from '../constants';
 import { ApiResponse, Person } from '../types';
 
-// Create axios instance with base configuration
 const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
@@ -13,7 +12,6 @@ const api = axios.create({
   },
 });
 
-// Add auth token to requests
 api.interceptors.request.use(
   async (config) => {
     const token = await AsyncStorage.getItem('@auth_token');
@@ -27,9 +25,7 @@ api.interceptors.request.use(
   }
 );
 
-// API Methods
 export const apiService = {
-  // Get recommendations for swiping
   getRecommendations: async (page = 1, perPage = DEFAULT_PER_PAGE): Promise<ApiResponse<Person[]>> => {
     const response = await api.get<ApiResponse<Person[]>>('/recommendations', {
       params: {
@@ -40,7 +36,6 @@ export const apiService = {
     return response.data;
   },
 
-  // Like a person
   likePerson: async (likedId: number): Promise<ApiResponse<any>> => {
     const response = await api.post<ApiResponse<any>>('/likes', {
       liked_id: likedId,
@@ -48,7 +43,6 @@ export const apiService = {
     return response.data;
   },
 
-  // Dislike a person
   dislikePerson: async (dislikedId: number): Promise<ApiResponse<any>> => {
     const response = await api.post<ApiResponse<any>>('/dislikes', {
       disliked_id: dislikedId,
@@ -56,7 +50,6 @@ export const apiService = {
     return response.data;
   },
 
-  // Get liked people
   getLikedPeople: async (page = 1, perPage = DEFAULT_PER_PAGE): Promise<ApiResponse<Person[]>> => {
     const response = await api.get<ApiResponse<Person[]>>('/liked-people', {
       params: {

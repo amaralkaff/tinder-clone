@@ -2,13 +2,11 @@ import { useQuery, useMutation, useQueryClient, UseQueryResult, UseMutationResul
 import { apiService } from './api';
 import { ApiResponse, Person } from '../types';
 
-// Query Keys
 export const queryKeys = {
   recommendations: ['recommendations'] as const,
   likedPeople: ['likedPeople'] as const,
 };
 
-// Get Recommendations Hook
 export const useRecommendations = (
   page = 1,
   perPage = 15
@@ -21,7 +19,6 @@ export const useRecommendations = (
   });
 };
 
-// Get Liked People Hook
 export const useLikedPeople = (
   page = 1,
   perPage = 15
@@ -33,30 +30,23 @@ export const useLikedPeople = (
   });
 };
 
-// Like Person Mutation
 export const useLikePerson = (): UseMutationResult<ApiResponse<any>, Error, number, unknown> => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (likedId: number) => apiService.likePerson(likedId),
     onSuccess: () => {
-      // Only invalidate liked people list, not recommendations
-      // Backend already filters out liked people from recommendations
+      // Backend handles filtering, so we only refresh the likes list
       queryClient.invalidateQueries({ queryKey: queryKeys.likedPeople });
     },
   });
 };
 
-// Dislike Person Mutation
 export const useDislikePerson = (): UseMutationResult<ApiResponse<any>, Error, number, unknown> => {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (dislikedId: number) => apiService.dislikePerson(dislikedId),
     onSuccess: () => {
-      // No need to invalidate recommendations
-      // Backend already filters out disliked people from recommendations
-      // Data will refresh naturally when user runs out of profiles
+      // Backend filters dislikes automatically - no need to refresh here
     },
   });
 };

@@ -5,7 +5,6 @@ import api from './api';
 const TOKEN_KEY = '@auth_token';
 const USER_KEY = '@auth_user';
 
-// Types
 interface LoginRequest {
   email: string;
   password: string;
@@ -29,7 +28,6 @@ interface AuthResponse {
   token: string;
 }
 
-// Storage helpers
 export const authStorage = {
   async setToken(token: string): Promise<void> {
     await AsyncStorage.setItem(TOKEN_KEY, token);
@@ -53,7 +51,6 @@ export const authStorage = {
   },
 };
 
-// API Methods
 export const authApi = {
   login: async (credentials: LoginRequest): Promise<AuthResponse> => {
     const response = await api.post<AuthResponse>('/login', credentials);
@@ -70,7 +67,6 @@ export const authApi = {
   },
 };
 
-// React Query Hooks
 export const useLogin = (): UseMutationResult<AuthResponse, Error, LoginRequest, unknown> => {
   return useMutation({
     mutationFn: authApi.login,

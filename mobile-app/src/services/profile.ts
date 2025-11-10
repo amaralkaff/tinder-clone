@@ -22,7 +22,7 @@ export interface ProfilePicture {
 }
 
 export interface CreateProfileRequest {
-  name?: string; // Optional - auto-populated from registration if not provided
+  name?: string; // Auto-filled from registration if you skip it
   age: number;
   location: string;
 }
@@ -45,7 +45,6 @@ export interface PictureResponse {
   message: string;
 }
 
-// API functions
 export const profileApi = {
   getProfile: async (): Promise<Profile> => {
     const { data } = await api.get<ProfileResponse>('/profile');
@@ -87,7 +86,6 @@ export const profileApi = {
   },
 };
 
-// React Query hooks
 export const useProfile = (): UseQueryResult<Profile, Error> => {
   return useQuery({
     queryKey: ['profile'],

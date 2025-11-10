@@ -104,7 +104,6 @@ export const RegisterScreen: React.FC = () => {
         password,
         password_confirmation: passwordConfirmation,
       });
-      // After registration, user needs to create profile
       navigation.replace('ProfileSetup');
     } catch (error: any) {
       const errors = error?.response?.data?.errors;
@@ -178,7 +177,6 @@ export const RegisterScreen: React.FC = () => {
       style={styles.container}
     >
       <View style={styles.container}>
-        {/* Progress Bar */}
         <View style={[styles.progressContainer, { paddingTop: insets.top }]}>
           <View style={styles.progressBarWrapper}>
             <LinearGradient
@@ -198,12 +196,10 @@ export const RegisterScreen: React.FC = () => {
           ]}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Close Button */}
           <TouchableOpacity style={styles.closeButton} onPress={handleBack}>
             <Text style={styles.closeButtonText}>✕</Text>
           </TouchableOpacity>
 
-          {/* Logo */}
           <View style={styles.logoContainer}>
             <Image
               source={require('../../assets/images/tinder-logo.png')}
@@ -212,10 +208,8 @@ export const RegisterScreen: React.FC = () => {
             />
           </View>
 
-          {/* Title */}
           <Text style={styles.title}>{stepContent.title}</Text>
 
-          {/* Input Field */}
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -232,11 +226,9 @@ export const RegisterScreen: React.FC = () => {
             />
           </View>
 
-          {/* Helper Text */}
           <Text style={styles.helperText}>{stepContent.helperText}</Text>
         </ScrollView>
 
-        {/* Continue Button */}
         <View style={[styles.buttonContainer, { paddingBottom: insets.bottom + 24 }]}>
           <TouchableOpacity
             style={styles.button}
@@ -258,7 +250,6 @@ export const RegisterScreen: React.FC = () => {
             </LinearGradient>
           </TouchableOpacity>
 
-          {/* Login Link */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>Already have an account? </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>

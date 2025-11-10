@@ -39,17 +39,14 @@ export const LoginScreen: React.FC = () => {
     try {
       await loginMutation.mutateAsync({ email, password });
 
-      // Check if user has a profile
+      // Redirect based on profile status
       try {
         await profileApi.getProfile();
-        // Profile exists, go to main app
         navigation.replace('MainTabs');
       } catch (profileError: any) {
-        // Profile doesn't exist (404), go to profile setup
         if (profileError?.response?.status === 404) {
           navigation.replace('ProfileSetup');
         } else {
-          // Other error, go to main app anyway
           navigation.replace('MainTabs');
         }
       }
@@ -73,7 +70,6 @@ export const LoginScreen: React.FC = () => {
         ]}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Header */}
         <View style={styles.header}>
           <Image
             source={require('../../assets/images/tinder-logo.png')}
@@ -82,7 +78,6 @@ export const LoginScreen: React.FC = () => {
           />
         </View>
 
-        {/* Login Form */}
         <View style={styles.form}>
           <View style={styles.inputContainer}>
             <TextInput
@@ -133,7 +128,6 @@ export const LoginScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Register Link */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>Don't have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Register')}>

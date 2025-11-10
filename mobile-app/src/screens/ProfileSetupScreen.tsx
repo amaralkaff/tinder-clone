@@ -77,13 +77,11 @@ export const ProfileSetupScreen: React.FC = () => {
 
   const handleCreateProfile = async () => {
     try {
-      // Create profile first (name auto-populated from registration)
       await createProfileMutation.mutateAsync({
         age: parseInt(age),
         location: location.trim(),
       });
 
-      // Upload photos if any were selected
       if (selectedImages.length > 0) {
         setIsUploading(true);
         try {
@@ -92,7 +90,6 @@ export const ProfileSetupScreen: React.FC = () => {
           }
         } catch (uploadError) {
           console.error('Photo upload error:', uploadError);
-          // Continue to app even if photo upload fails
         }
         setIsUploading(false);
       }
@@ -177,7 +174,6 @@ export const ProfileSetupScreen: React.FC = () => {
       style={styles.container}
     >
       <View style={styles.container}>
-        {/* Progress Bar */}
         <View style={[styles.progressContainer, { paddingTop: insets.top }]}>
           <View style={styles.progressBarWrapper}>
             <LinearGradient
@@ -197,14 +193,12 @@ export const ProfileSetupScreen: React.FC = () => {
           ]}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Back Button */}
           {currentStep > STEPS.AGE && (
             <TouchableOpacity style={styles.backButton} onPress={handleBack}>
               <Text style={styles.backButtonText}>←</Text>
             </TouchableOpacity>
           )}
 
-          {/* Logo */}
           <View style={styles.logoContainer}>
             <Image
               source={require('../../assets/images/tinder-logo.png')}
@@ -215,11 +209,9 @@ export const ProfileSetupScreen: React.FC = () => {
 
           {isPhotosStep ? (
             <>
-              {/* Photos Step */}
               <Text style={styles.title}>Add your photos</Text>
               <Text style={styles.helperText}>Add at least 2 photos to get better matches</Text>
 
-              {/* Photo Grid */}
               <View style={styles.photoGrid}>
                 {selectedImages.map((uri, index) => (
                   <View key={index} style={styles.photoItem}>
@@ -241,7 +233,6 @@ export const ProfileSetupScreen: React.FC = () => {
             </>
           ) : stepContent ? (
             <>
-              {/* Regular Input Steps */}
               <Text style={styles.title}>{stepContent.title}</Text>
 
               <View style={styles.inputContainer}>
@@ -264,7 +255,6 @@ export const ProfileSetupScreen: React.FC = () => {
           ) : null}
         </ScrollView>
 
-        {/* Continue Button */}
         <View style={[styles.buttonContainer, { paddingBottom: insets.bottom + 24 }]}>
           {isPhotosStep && (
             <TouchableOpacity
