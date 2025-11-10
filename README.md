@@ -144,6 +144,8 @@ Or add as systemd service for automatic restart.
 
 ## Email Notifications
 
+### Configuration
+
 Configure in `.env`:
 ```bash
 MAIL_MAILER=smtp
@@ -154,9 +156,59 @@ MAIL_PASSWORD=your-app-password
 MAIL_ADMIN_EMAIL=admin@yourdomain.com
 ```
 
-Manual test:
+### Threshold Recommendations
+
+**Best Practice by User Base:**
+- **Small apps (< 1,000 users):** 20-30 likes
+- **Medium apps (1,000-10,000 users):** 50-100 likes
+- **Large apps (10,000+ users):** 100-500 likes
+
+**Default:** 50 likes (configurable)
+
+### Change Threshold
+
+Edit `backend/routes/console.php` line 12:
+```php
+// Change to your preferred threshold
+Schedule::command('profiles:check-popular --threshold=20')
+    ->daily()
+    ->at('09:00')
+```
+
+### Testing Email Notifications
+
+**Step 1: Create Test Data**
 ```bash
-php artisan profiles:check-popular --threshold=50
+# Login to MySQL
+mysql -u your_user -p your_database
+
+# Give a profile 25+ likes for testing
+# (Adjust based on your threshold)
+```
+
+**Step 2: Test Manually**
+```bash
+cd backend
+
+# Run check with custom threshold
+php artisan profiles:check-popular --threshold=20
+
+# Process the queued email
+php artisan queue:work --once
+```
+
+**Step 3: Verify**
+- Check admin email inbox
+- Check logs: `backend/storage/logs/popular-profiles.log`
+- Check database: profile should have `popular_profile_email_sent = 1`
+
+**Step 4: Reset for Re-testing**
+```bash
+# Reset notification flag
+mysql -u your_user -p -e "UPDATE people SET popular_profile_email_sent = 0 WHERE id = X;"
+
+# Run test again
+php artisan profiles:check-popular --threshold=20
 php artisan queue:work --once
 ```
 
