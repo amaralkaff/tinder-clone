@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { View, Animated } from 'react-native';
+import { View, Image, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { Text } from '../components/atoms/Text';
 import { authStorage } from '../services/auth';
+import { profileApi } from '../services/profile';
 
 type SplashScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Splash'>;
 
@@ -21,7 +22,24 @@ export const SplashScreen: React.FC = () => {
 
     const checkAuth = async () => {
       const token = await authStorage.getToken();
-      const destination = token ? 'MainTabs' : 'Login';
+
+      let destination: keyof RootStackParamList = 'Login';
+
+      if (token) {
+        // User is logged in, check if they have a profile
+        try {
+          await profileApi.getProfile();
+          destination = 'MainTabs';
+        } catch (error: any) {
+          // Profile doesn't exist, need to create one
+          if (error?.response?.status === 404) {
+            destination = 'ProfileSetup';
+          } else {
+            // Other error, assume they need to login again
+            destination = 'Login';
+          }
+        }
+      }
 
       setTimeout(() => {
         navigation.replace(destination);
@@ -34,9 +52,11 @@ export const SplashScreen: React.FC = () => {
   return (
     <View className="flex-1 bg-white items-center justify-center">
       <Animated.View style={{ opacity: fadeAnim }} className="items-center">
-        <Text className="text-8xl mb-5">🔥</Text>
-        <Text className="text-2xl font-bold text-pink-500 mb-2">Tinder Clone</Text>
-        <Text className="text-base text-gray-500">Find your match</Text>
+        <Image
+          source={require('../../assets/images/tinder-logo.png')}
+          style={{ width: 200, height: 200, tintColor: '#FE3C72' }}
+          resizeMode="contain"
+        />
       </Animated.View>
     </View>
   );

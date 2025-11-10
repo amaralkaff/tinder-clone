@@ -16,9 +16,10 @@ interface ProfileGridCardProps {
 }
 
 export const ProfileGridCard: React.FC<ProfileGridCardProps> = ({ person, onPress }) => {
-  const primaryPicture = person.pictures?.[0]?.image_url
+  const hasPicture = person.pictures?.[0]?.image_url;
+  const primaryPicture = hasPicture
     ? `${BASE_URL}${person.pictures[0].image_url}`
-    : 'https://via.placeholder.com/400';
+    : null;
 
   return (
     <TouchableOpacity
@@ -34,7 +35,7 @@ export const ProfileGridCard: React.FC<ProfileGridCardProps> = ({ person, onPres
       activeOpacity={0.85}
     >
       <Image
-        source={{ uri: primaryPicture }}
+        source={primaryPicture ? { uri: primaryPicture } : require('../../../assets/images/placeholder.png')}
         style={{ width: '100%', height: '100%' }}
         contentFit="cover"
       />

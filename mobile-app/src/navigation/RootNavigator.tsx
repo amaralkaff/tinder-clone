@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SplashScreen } from '../screens/SplashScreen';
 import { LoginScreen } from '../screens/LoginScreen';
 import { RegisterScreen } from '../screens/RegisterScreen';
+import { ProfileSetupScreen } from '../screens/ProfileSetupScreen';
 import { MainScreen } from '../screens/MainScreen';
 import { LikesScreen } from '../screens/LikesScreen';
 import { RootStackParamList, MainTabsParamList } from '../types';
@@ -36,7 +37,7 @@ const MainTabs: React.FC = () => {
           tabBarIcon: ({ focused }) => (
             <View className="items-center justify-center">
               <Image
-                source={{ uri: 'https://logos-world.net/wp-content/uploads/2020/09/Tinder-Emblem.png' }}
+                source={require('../../assets/images/tinder-logo.png')}
                 style={{
                   width: 46,
                   height: 46,
@@ -71,6 +72,7 @@ export const RootNavigator: React.FC = () => {
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="ProfileSetup" component={ProfileSetupScreen} />
         <Stack.Screen name="MainTabs" component={MainTabs} />
       </Stack.Navigator>
     </NavigationContainer>
