@@ -88,5 +88,27 @@ php artisan queue:work --once
 
 Default threshold: **50 likes** (PRD requirement)
 
-*This README was written by AI because the developer was too lazy to write proper documentation. At least it's 
- comprehensive, right?* 😅
+## Demo Accounts
+
+The database includes 10 test accounts with profiles and pictures for testing:
+
+```
+Email               | Name                  | Password
+------------------- | --------------------- | ------------
+siti@test.com      | Siti Nurhaliza        | password123
+putri@test.com     | Putri Andini          | password123
+dewi@test.com      | Dewi Lestari          | password123
+raisa@test.com     | Raisa Andriana        | password123
+isyana@test.com    | Isyana Sarasvati      | password123
+titi@test.com      | Titi Kamal            | password123
+bcl@test.com       | Bunga Citra Lestari   | password123
+maudy@test.com     | Maudy Ayunda          | password123
+chelsea@test.com   | Chelsea Islan         | password123
+dian@test.com      | Dian Sastro           | password123
+```
+
+All accounts have complete profiles with photos ready for swipe functionality testing.
+
+## License
+
+MIT
