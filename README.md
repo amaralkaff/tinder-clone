@@ -88,6 +88,12 @@ php artisan queue:work --once
 
 Default threshold: **50 likes** (PRD requirement)
 
+### Email Notification Example
+
+When a profile reaches the threshold, the admin receives an email notification:
+
+![Popular Profile Email Notification](mobile-app/assets/IMG_0940.PNG)
+
 ## Demo Accounts
 
 The database includes 10 test accounts with profiles and pictures for testing:
