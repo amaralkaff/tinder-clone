@@ -202,4 +202,4 @@ MIT
 
 ---
 
-*This README was created with AI assistance to provide clear and comprehensive project documentation.*
+*This README was written by AI because the developer was too lazy to write proper documentation. At least it's comprehensive, right?* 😅
