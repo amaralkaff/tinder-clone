@@ -62,8 +62,8 @@ class ProfileController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"name", "age", "location"},
-     *             @OA\Property(property="name", type="string", example="John Doe"),
+     *             required={"age", "location"},
+     *             @OA\Property(property="name", type="string", example="John Doe", description="Display name (optional, defaults to registration name)"),
      *             @OA\Property(property="age", type="integer", example=25),
      *             @OA\Property(property="location", type="string", example="Jakarta")
      *         )
@@ -89,7 +89,7 @@ class ProfileController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => 'sometimes|string|max:255',
             'age' => 'required|integer|min:18|max:100',
             'location' => 'required|string|max:255',
         ]);
@@ -101,9 +101,12 @@ class ProfileController extends Controller
             ], 422);
         }
 
+        // Use provided name or default to registration name
+        $profileName = $request->input('name', $request->user()->name);
+
         $profile = Person::create([
             'user_id' => $request->user()->id,
-            'name' => $request->name,
+            'name' => $profileName,
             'age' => $request->age,
             'location' => $request->location,
         ]);
