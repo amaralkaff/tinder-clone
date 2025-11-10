@@ -56,7 +56,7 @@ export const MainScreen: React.FC = () => {
         zIndex: 100
       }}>
         <Image
-          source={{ uri: 'https://logos-world.net/wp-content/uploads/2020/09/Tinder-Logo.png' }}
+          source={require('../../assets/images/tinder-logo-full.png')}
           style={{ width: 120, height: 40 }}
           resizeMode="contain"
         />

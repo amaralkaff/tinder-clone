@@ -12,9 +12,10 @@ interface ProfileCardProps {
 }
 
 export const ProfileCard: React.FC<ProfileCardProps> = ({ person, style }) => {
-  const primaryPicture = person.pictures?.[0]?.image_url
+  const hasPicture = person.pictures?.[0]?.image_url;
+  const primaryPicture = hasPicture
     ? `${BASE_URL}${person.pictures[0].image_url}`
-    : 'https://via.placeholder.com/400';
+    : null;
 
   return (
     <View
@@ -39,7 +40,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ person, style }) => {
       ]}
     >
       <Image
-        source={{ uri: primaryPicture }}
+        source={primaryPicture ? { uri: primaryPicture } : require('../../../assets/images/placeholder.png')}
         style={{
           width: '100%',
           height: '100%'
