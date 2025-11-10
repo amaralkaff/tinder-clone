@@ -20,6 +20,23 @@ The PRD recommended "React Query + Recoil", but this app uses **React Query only
 
 **YAGNI Principle:** Recoil would add unnecessary complexity for this scope. React Query alone provides everything needed for data fetching, caching, and optimistic updates.
 
+### Authentication & Profile Management (Not in PRD)
+
+The PRD didn't explicitly require authentication or profile management, but they were **necessary** to implement the core features:
+
+**Why added:**
+- **User tracking required:** Need to know WHO is liking/disliking WHO (liker_id references user's profile)
+- **Profile data source:** Recommendations API needs actual profiles to serve
+- **API security:** Protected endpoints require authentication (Laravel Sanctum)
+- **Data integrity:** Prevent anonymous/duplicate likes/dislikes
+
+**Implementation:**
+- Backend: Registration, login, profile CRUD, picture upload/delete
+- Mobile: LoginScreen, RegisterScreen, ProfileSetupScreen
+- Auth flow: Register → Create Profile → Access Main Features
+
+**Conclusion:** While not in PRD scope, these features are foundational requirements for any dating app to function.
+
 ## Features (PRD Implementation)
 
 ### Backend
