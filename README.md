@@ -156,61 +156,37 @@ MAIL_PASSWORD=your-app-password
 MAIL_ADMIN_EMAIL=admin@yourdomain.com
 ```
 
-### Threshold Recommendations
+### Threshold
 
-**Best Practice by User Base:**
-- **Small apps (< 1,000 users):** 20-30 likes
-- **Medium apps (1,000-10,000 users):** 50-100 likes
-- **Large apps (10,000+ users):** 100-500 likes
+**Default:** 50 likes (as per PRD requirement)
 
-**Default:** 50 likes (configurable)
-
-### Change Threshold
-
-Edit `backend/routes/console.php` line 12:
-```php
-// Change to your preferred threshold
-Schedule::command('profiles:check-popular --threshold=20')
-    ->daily()
-    ->at('09:00')
-```
+The threshold is configurable via command option for testing purposes.
 
 ### Testing Email Notifications
 
-**Step 1: Create Test Data**
-```bash
-# Login to MySQL
-mysql -u your_user -p your_database
+**Test with lower threshold (for testing only):**
 
-# Give a profile 25+ likes for testing
-# (Adjust based on your threshold)
-```
-
-**Step 2: Test Manually**
 ```bash
 cd backend
 
-# Run check with custom threshold
-php artisan profiles:check-popular --threshold=20
+# Test with 10 likes threshold
+php artisan profiles:check-popular --threshold=10
 
 # Process the queued email
 php artisan queue:work --once
 ```
 
-**Step 3: Verify**
-- Check admin email inbox
+**Verify:**
+- Check admin email inbox for notification
 - Check logs: `backend/storage/logs/popular-profiles.log`
-- Check database: profile should have `popular_profile_email_sent = 1`
+- Check database: `popular_profile_email_sent = 1`
 
-**Step 4: Reset for Re-testing**
+**Reset for re-testing:**
 ```bash
-# Reset notification flag
-mysql -u your_user -p -e "UPDATE people SET popular_profile_email_sent = 0 WHERE id = X;"
-
-# Run test again
-php artisan profiles:check-popular --threshold=20
-php artisan queue:work --once
+mysql -u tinder_user -p -e "UPDATE people SET popular_profile_email_sent = 0 WHERE id = [profile_id];"
 ```
+
+**Production:** Runs automatically daily at 9:00 AM with 50 likes threshold.
 
 ## Environment Configuration
 

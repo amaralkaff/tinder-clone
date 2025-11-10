@@ -15,14 +15,14 @@ class CheckPopularProfiles extends Command
      *
      * @var string
      */
-    protected $signature = 'profiles:check-popular {--threshold=20}';
+    protected $signature = 'profiles:check-popular {--threshold=50}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Check for profiles with threshold+ likes and send email notifications to admin';
+    protected $description = 'Check for profiles with 50+ likes and send email notifications to admin';
 
     /**
      * Execute the console command.
@@ -60,7 +60,7 @@ class CheckPopularProfiles extends Command
             try {
                 // Send email to admin
                 Mail::to($adminEmail)->send(
-                    new PopularProfileNotification($person, $likesCount)
+                    new PopularProfileNotification($person, $likesCount, $threshold)
                 );
 
                 // Mark as notified

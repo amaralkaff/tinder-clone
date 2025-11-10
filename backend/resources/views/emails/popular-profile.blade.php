@@ -63,7 +63,7 @@
 
         <h1>Popular Profile Alert</h1>
 
-        <p>A profile has reached 50+ likes:</p>
+        <p>A profile has reached {{ $threshold }}+ likes:</p>
 
         <div class="profile-info">
             <p><strong>Name:</strong> {{ $person->name }}</p>
@@ -72,7 +72,7 @@
             <p class="likes-count">{{ $likesCount }} likes</p>
         </div>
 
-        <p>This profile has become popular and may need review.</p>
+        <p>This profile has reached the {{ $threshold }} likes milestone and may need review.</p>
 
         <div class="footer">
             <p>Automated notification from Tinder Clone</p>

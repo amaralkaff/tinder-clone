@@ -19,7 +19,8 @@ class PopularProfileNotification extends Mailable implements ShouldQueue
      */
     public function __construct(
         public Person $person,
-        public int $likesCount
+        public int $likesCount,
+        public int $threshold = 50
     ) {
         //
     }
@@ -44,6 +45,7 @@ class PopularProfileNotification extends Mailable implements ShouldQueue
             with: [
                 'person' => $this->person,
                 'likesCount' => $this->likesCount,
+                'threshold' => $this->threshold,
             ],
         );
     }

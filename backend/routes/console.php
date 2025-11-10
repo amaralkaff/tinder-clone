@@ -9,8 +9,8 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 // Schedule popular profile check to run daily at 9 AM
-// Threshold: 20 likes (recommended for small apps < 1000 users)
-Schedule::command('profiles:check-popular --threshold=20')
+// Threshold: 50 likes (as per PRD requirement)
+Schedule::command('profiles:check-popular')
     ->daily()
     ->at('09:00')
     ->timezone('Asia/Jakarta')
