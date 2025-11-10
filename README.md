@@ -4,9 +4,21 @@ Dating app with swipe functionality built with Laravel backend and React Native 
 
 ## Stack
 
-**Backend:** Laravel 11, PHP 8.2+, MySQL 8.0, Laravel Sanctum, Swagger
+**Backend:** Laravel 12, PHP 8.2+, MySQL 8.0, Laravel Sanctum, Swagger
 
 **Mobile:** React Native (Expo), React Query, Atomic Design, TypeScript
+
+## Architecture Decisions
+
+### State Management: React Query Only (No Recoil)
+
+The PRD recommended "React Query + Recoil", but this app uses **React Query only**. Here's why:
+
+- **React Query** handles all server state (API calls, caching, mutations)
+- **Component useState** handles local UI state (card index, swipe tracking)
+- **No global UI state needed** - no shared theme, filters, or complex derived state
+
+**YAGNI Principle:** Recoil would add unnecessary complexity for this scope. React Query alone provides everything needed for data fetching, caching, and optimistic updates.
 
 ## Features (PRD Implementation)
 
@@ -118,7 +130,3 @@ All accounts have complete profiles with photos ready for swipe functionality te
 ## License
 
 MIT
-
----
-
-*This README was written by AI because the developer was too lazy to write proper documentation. At least it's comprehensive, right?* 😅
