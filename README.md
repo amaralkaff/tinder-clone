@@ -112,3 +112,7 @@ All accounts have complete profiles with photos ready for swipe functionality te
 ## License
 
 MIT
+
+---
+
+*This README was written by AI because the developer was too lazy to write proper documentation. At least it's comprehensive, right?* 😅
