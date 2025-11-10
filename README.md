@@ -5,6 +5,7 @@ Dating app with swipe functionality built with Laravel backend and React Native 
 ## Stack
 
 **Backend:** Laravel 11, PHP 8.2+, MySQL 8.0, Laravel Sanctum, Swagger
+
 **Mobile:** React Native (Expo), React Query, Atomic Design, TypeScript
 
 ## Features (PRD Implementation)
@@ -87,6 +88,5 @@ php artisan queue:work --once
 
 Default threshold: **50 likes** (PRD requirement)
 
-## License
-
-MIT
+*This README was written by AI because the developer was too lazy to write proper documentation. At least it's 
+ comprehensive, right?* 😅
